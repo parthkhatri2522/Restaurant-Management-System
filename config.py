@@ -9,5 +9,11 @@ class Config:
         "servewise-development-secret"
     )
 
-    # Enable debug mode during development
+    # SQLite database configuration
+    SQLALCHEMY_DATABASE_URI = "sqlite:///servewise.db"
+
+    # Disable unnecessary modification tracking
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Enable debugging during development
     DEBUG = True

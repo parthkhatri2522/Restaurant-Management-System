@@ -1,9 +1,7 @@
-
 import os
 import click
 
 from flask import Flask, jsonify
-from flask_login import LoginManager
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -58,13 +56,17 @@ def create_app():
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix="/auth")
 
-    # Register access control routes
+    # Register role-based access routes
     from app.routes.access import access_bp
     app.register_blueprint(access_bp)
 
     # Register dashboard routes
     from app.routes.dashboard import dashboard_bp
     app.register_blueprint(dashboard_bp)
+
+    # Register navigation routes
+    from app.routes.navigation import navigation_bp
+    app.register_blueprint(navigation_bp)
 
     # Backend health check
     @app.route("/health", methods=["GET"])

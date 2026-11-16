@@ -19,11 +19,16 @@ def create_app():
     # Load application configuration
     app.config.from_object(Config)
 
-    # Create instance directory automatically
+    # Create instance directory
     os.makedirs(app.instance_path, exist_ok=True)
 
     # Initialize database extensions
     db.init_app(app)
+
+    # Import models to register them with SQLAlchemy
+    from app.models import User, Employee
+
+    # Initialize database migration extension
     migrate.init_app(app, db)
 
     # Backend health-check endpoint
@@ -35,7 +40,7 @@ def create_app():
             "message": "ServeWise backend is running"
         }), 200
 
-    # Database connection health-check endpoint
+    # Database health-check endpoint
     @app.route("/health/database", methods=["GET"])
     def database_health_check():
 

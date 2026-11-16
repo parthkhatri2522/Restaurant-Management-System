@@ -1,9 +1,9 @@
+
 import os
 import click
 
 from flask import Flask, jsonify
-from flask_login import current_user
-
+from flask_login import current_user, LoginManager
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -13,43 +13,34 @@ from app.extensions import db, migrate, login_manager
 
 def create_app():
 
-    # Initialize Flask application
     app = Flask(
         __name__,
         instance_relative_config=True
     )
 
-    # Load application configuration
     app.config.from_object(Config)
 
-    # Create instance directory
     os.makedirs(app.instance_path, exist_ok=True)
 
     # Initialize database
     db.init_app(app)
 
-    # Initialize authentication manager
+    # Initialize Flask-Login
     login_manager.init_app(app)
-
-    # Configure session protection
     login_manager.session_protection = "strong"
 
     # Import database models
     from app.models import User, Employee
 
-    # Load authenticated user from session
     @login_manager.user_loader
     def load_user(user_id):
-
         try:
             return db.session.get(User, int(user_id))
         except (ValueError, TypeError):
             return None
 
-    # Return JSON when authentication is required
     @login_manager.unauthorized_handler
     def unauthorized():
-
         return jsonify({
             "status": "error",
             "message": "Authentication required"
@@ -60,13 +51,15 @@ def create_app():
 
     # Register authentication routes
     from app.routes.auth import auth_bp
-
     app.register_blueprint(auth_bp, url_prefix="/auth")
+
+    # Register role-based access routes
+    from app.routes.access import access_bp
+    app.register_blueprint(access_bp)
 
     # Backend health check
     @app.route("/health", methods=["GET"])
     def health_check():
-
         return jsonify({
             "status": "success",
             "message": "ServeWise backend is running"
@@ -75,25 +68,20 @@ def create_app():
     # Database health check
     @app.route("/health/database", methods=["GET"])
     def database_health_check():
-
         try:
             db.session.execute(text("SELECT 1"))
-
             return jsonify({
                 "status": "success",
                 "message": "Database connection successful"
             }), 200
-
         except SQLAlchemyError:
-
             db.session.rollback()
-
             return jsonify({
                 "status": "error",
                 "message": "Database connection failed"
             }), 500
 
-    # Create initial administrator account through CLI
+    # Initial administrator creation command
     @app.cli.command("create-admin")
     def create_admin():
 

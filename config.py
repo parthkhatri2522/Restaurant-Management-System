@@ -17,3 +17,7 @@ class Config:
 
     # Enable debugging during development
     DEBUG = True
+        # Session security settings
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = False

@@ -1,3 +1,4 @@
+
 import os
 import click
 
@@ -67,6 +68,10 @@ def create_app():
     # Register navigation routes
     from app.routes.navigation import navigation_bp
     app.register_blueprint(navigation_bp)
+
+    # Register menu management routes
+    from app.routes.menu import menu_bp
+    app.register_blueprint(menu_bp, url_prefix="/api")
 
     # Backend health check
     @app.route("/health", methods=["GET"])

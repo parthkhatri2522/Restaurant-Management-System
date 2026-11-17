@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ServeWise
 ## Restaurant Management System
 
@@ -20,3 +21,6 @@ as an academic project for Total Quality Management.
 4. Financial Management
 5. Total Quality Management
 6. Reports and Analytics
+=======
+# Restaurant-Management-System
+>>>>>>> origin/main

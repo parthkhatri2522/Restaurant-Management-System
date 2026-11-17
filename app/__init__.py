@@ -1,4 +1,3 @@
-
 import os
 import click
 
@@ -12,29 +11,22 @@ from app.extensions import db, migrate, login_manager
 
 def create_app():
 
-    # Initialize Flask application
     app = Flask(
         __name__,
         instance_relative_config=True
     )
 
-    # Load application configuration
     app.config.from_object(Config)
 
-    # Create instance directory
     os.makedirs(app.instance_path, exist_ok=True)
 
-    # Initialize database
     db.init_app(app)
 
-    # Initialize Flask-Login
     login_manager.init_app(app)
     login_manager.session_protection = "strong"
 
-    # Import database models
     from app.models import User, Employee
 
-    # Load authenticated user
     @login_manager.user_loader
     def load_user(user_id):
         try:
@@ -42,7 +34,6 @@ def create_app():
         except (ValueError, TypeError):
             return None
 
-    # Handle unauthorized requests
     @login_manager.unauthorized_handler
     def unauthorized():
         return jsonify({
@@ -50,30 +41,26 @@ def create_app():
             "message": "Authentication required"
         }), 401
 
-    # Initialize database migrations
     migrate.init_app(app, db)
 
-    # Register authentication routes
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix="/auth")
 
-    # Register role-based access routes
     from app.routes.access import access_bp
     app.register_blueprint(access_bp)
 
-    # Register dashboard routes
     from app.routes.dashboard import dashboard_bp
     app.register_blueprint(dashboard_bp)
 
-    # Register navigation routes
     from app.routes.navigation import navigation_bp
     app.register_blueprint(navigation_bp)
 
-    # Register menu management routes
     from app.routes.menu import menu_bp
     app.register_blueprint(menu_bp, url_prefix="/api")
 
-    # Backend health check
+    from app.routes.tables import tables_bp
+    app.register_blueprint(tables_bp, url_prefix="/api")
+
     @app.route("/health", methods=["GET"])
     def health_check():
         return jsonify({
@@ -81,10 +68,8 @@ def create_app():
             "message": "ServeWise backend is running"
         }), 200
 
-    # Database health check
     @app.route("/health/database", methods=["GET"])
     def database_health_check():
-
         try:
             db.session.execute(text("SELECT 1"))
 
@@ -101,7 +86,6 @@ def create_app():
                 "message": "Database connection failed"
             }), 500
 
-    # Create initial administrator account
     @app.cli.command("create-admin")
     def create_admin():
 

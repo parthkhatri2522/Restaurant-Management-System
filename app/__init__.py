@@ -1,4 +1,3 @@
-
 import os
 import click
 
@@ -64,6 +63,9 @@ def create_app():
 
     from app.routes.reservations import reservations_bp
     app.register_blueprint(reservations_bp, url_prefix="/api")
+
+    from app.routes.orders import orders_bp
+    app.register_blueprint(orders_bp, url_prefix="/api")
 
     @app.route("/health", methods=["GET"])
     def health_check():

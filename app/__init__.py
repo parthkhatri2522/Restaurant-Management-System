@@ -1,4 +1,3 @@
-
 import os
 import click
 
@@ -28,7 +27,6 @@ def create_app():
 
     from app.models import User, Employee
 
-    # Register invoicing models with SQLAlchemy and Flask-Migrate.
     from app.models.invoicing import (
         TaxConfiguration,
         RestaurantInvoice,
@@ -81,9 +79,12 @@ def create_app():
     from app.routes.billing import billing_bp
     app.register_blueprint(billing_bp, url_prefix="/api")
 
-    # Commit 17: GST and invoice routes.
     from app.routes.invoices import invoices_bp
     app.register_blueprint(invoices_bp, url_prefix="/api")
+
+    # Commit 18: Payment management.
+    from app.routes.payments import payments_bp
+    app.register_blueprint(payments_bp, url_prefix="/api")
 
     @app.route("/health", methods=["GET"])
     def health_check():

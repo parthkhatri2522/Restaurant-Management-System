@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}ServeWise | Restaurant Management{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            RESTAURANT MANAGEMENT SYSTEM
+        </div>
+
+        <h1>
+            Run your restaurant.
+            <span>Run it smarter.</span>
+        </h1>
+
+        <p class="hero-description">
+            Manage restaurant operations from one place.
+            ServeWise brings together orders, reservations,
+            kitchen operations, billing and payments in a
+            single management platform.
+        </p>
+
+        <div class="hero-actions">
+            <a href="/health" class="button button-primary">
+                Check System Status
+                <span aria-hidden="true">&rarr;</span>
+            </a>
+
+            <a href="#modules" class="button button-secondary">
+                Explore Features
+            </a>
+        </div>
+
+        <div class="hero-note">
+            <span class="status-dot"></span>
+            Your restaurant operations, connected.
+        </div>
+
+    </div>
+
+    <div class="hero-visual">
+
+        <div class="visual-card visual-card-main">
+
+            <div class="visual-card-header">
+                <div>
+                    <span class="visual-label">SERVEWISE</span>
+                    <h3>Operations Hub</h3>
+                </div>
+
+                <span class="visual-menu">•••</span>
+            </div>
+
+            <div class="visual-divider"></div>
+
+            <div class="visual-item">
+                <span class="visual-item-icon orange">01</span>
+                <div>
+                    <strong>Order Management</strong>
+                    <small>Track customer orders</small>
+                </div>
+                <span class="visual-arrow">&rarr;</span>
+            </div>
+
+            <div class="visual-item">
+                <span class="visual-item-icon green">02</span>
+                <div>
+                    <strong>Kitchen Operations</strong>
+                    <small>Monitor food preparation</small>
+                </div>
+                <span class="visual-arrow">&rarr;</span>
+            </div>
+
+            <div class="visual-item">
+                <span class="visual-item-icon blue">03</span>
+                <div>
+                    <strong>Billing & Payments</strong>
+                    <small>Manage transactions</small>
+                </div>
+                <span class="visual-arrow">&rarr;</span>
+            </div>
+
+            <div class="visual-item">
+                <span class="visual-item-icon purple">04</span>
+                <div>
+                    <strong>Reservations</strong>
+                    <small>Organise table bookings</small>
+                </div>
+                <span class="visual-arrow">&rarr;</span>
+            </div>
+
+            <div class="visual-card-footer">
+                <span class="status-dot"></span>
+                Integrated restaurant operations
+            </div>
+
+        </div>
+
+        <div class="floating-tag">
+            <span class="floating-tag-icon">✦</span>
+            One platform. Complete control.
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="modules-section" id="modules">
+
+    <div class="section-heading">
+        <div>
+            <span class="section-eyebrow">CORE CAPABILITIES</span>
+            <h2>Everything your restaurant needs.</h2>
+        </div>
+
+        <p>
+            A connected platform for managing
+            essential restaurant workflows.
+        </p>
+    </div>
+
+    <div class="module-grid">
+
+        <article class="module-card">
+            <div class="module-icon orange">01</div>
+            <h3>Menu Management</h3>
+            <p>
+                Organise menu categories, food items
+                and pricing.
+            </p>
+        </article>
+
+        <article class="module-card">
+            <div class="module-icon blue">02</div>
+            <h3>Table Management</h3>
+            <p>
+                Manage dining tables and monitor
+                table availability.
+            </p>
+        </article>
+
+        <article class="module-card">
+            <div class="module-icon purple">03</div>
+            <h3>Reservations</h3>
+            <p>
+                Organise customer reservations
+                and seating.
+            </p>
+        </article>
+
+        <article class="module-card">
+            <div class="module-icon green">04</div>
+            <h3>Order Management</h3>
+            <p>
+                Track customer orders throughout
+                the service process.
+            </p>
+        </article>
+
+        <article class="module-card">
+            <div class="module-icon orange">05</div>
+            <h3>Kitchen Operations</h3>
+            <p>
+                Monitor kitchen orders and
+                preparation progress.
+            </p>
+        </article>
+
+        <article class="module-card">
+            <div class="module-icon blue">06</div>
+            <h3>Billing & Payments</h3>
+            <p>
+                Manage bills, invoices, taxes
+                and payment records.
+            </p>
+        </article>
+
+    </div>
+
+</section>
+
+{% endblock %}

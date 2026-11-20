@@ -49,6 +49,10 @@ def create_app():
 
     migrate.init_app(app, db)
 
+    # Frontend routes - Commit 19
+    from app.routes.web import web_bp
+    app.register_blueprint(web_bp)
+
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix="/auth")
 

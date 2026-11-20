@@ -70,6 +70,9 @@ def create_app():
     from app.routes.kitchen import kitchen_bp
     app.register_blueprint(kitchen_bp, url_prefix="/api")
 
+    from app.routes.billing import billing_bp
+    app.register_blueprint(billing_bp, url_prefix="/api")
+
     @app.route("/health", methods=["GET"])
     def health_check():
         return jsonify({

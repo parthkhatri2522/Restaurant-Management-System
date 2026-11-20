@@ -1,3 +1,4 @@
+
 import os
 import click
 
@@ -26,6 +27,13 @@ def create_app():
     login_manager.session_protection = "strong"
 
     from app.models import User, Employee
+
+    # Register invoicing models with SQLAlchemy and Flask-Migrate.
+    from app.models.invoicing import (
+        TaxConfiguration,
+        RestaurantInvoice,
+        RestaurantInvoiceItem
+    )
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -72,6 +80,10 @@ def create_app():
 
     from app.routes.billing import billing_bp
     app.register_blueprint(billing_bp, url_prefix="/api")
+
+    # Commit 17: GST and invoice routes.
+    from app.routes.invoices import invoices_bp
+    app.register_blueprint(invoices_bp, url_prefix="/api")
 
     @app.route("/health", methods=["GET"])
     def health_check():

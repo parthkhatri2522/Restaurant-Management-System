@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | ServeWise{% endblock %}
+
+{% block head %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-welcome">
+
+    <div class="welcome-card">
+        <div class="login-symbol">S</div>
+
+        <span class="login-eyebrow">AUTHENTICATION SUCCESSFUL</span>
+
+        <h1>Welcome, {{ current_user.username }}!</h1>
+
+        <p>
+            You have successfully signed in to ServeWise.
+            Your account is authenticated.
+        </p>
+
+        <div class="account-details">
+            <div>
+                <span>Username</span>
+                <strong>{{ current_user.username }}</strong>
+            </div>
+
+            <div>
+                <span>Assigned role</span>
+                <strong>{{ current_user.role|replace('_', ' ')|title }}</strong>
+            </div>
+        </div>
+
+        <p class="dashboard-coming-soon">
+            Your role-specific dashboard will be available
+            in the next development milestone.
+        </p>
+
+        <button type="button" id="logout-button" class="login-submit">
+            Sign Out
+            <span aria-hidden="true">&rarr;</span>
+        </button>
+
+        <div
+            id="logout-message"
+            class="login-message"
+            role="alert"
+            aria-live="polite"
+            hidden
+        ></div>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

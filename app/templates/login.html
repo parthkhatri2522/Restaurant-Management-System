@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Login | ServeWise{% endblock %}
+
+{% block head %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="login-page">
+
+    <div class="login-intro">
+        <span class="login-eyebrow">SERVEWISE MANAGEMENT</span>
+
+        <h1>Welcome back.<br><span>Let's get to work.</span></h1>
+
+        <p>
+            Sign in to access your restaurant operations,
+            manage your responsibilities and keep everything
+            running smoothly.
+        </p>
+
+        <div class="login-features">
+            <div class="login-feature">
+                <span>01</span>
+                <div>
+                    <strong>One connected platform</strong>
+                    <small>Manage essential restaurant operations.</small>
+                </div>
+            </div>
+
+            <div class="login-feature">
+                <span>02</span>
+                <div>
+                    <strong>Role-based access</strong>
+                    <small>Tools designed around your responsibilities.</small>
+                </div>
+            </div>
+
+            <div class="login-feature">
+                <span>03</span>
+                <div>
+                    <strong>Operational control</strong>
+                    <small>Keep your restaurant organised.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-panel">
+        <div class="login-panel-heading">
+            <div class="login-symbol">S</div>
+            <h2>Sign in to ServeWise</h2>
+            <p>Enter your account details to continue.</p>
+        </div>
+
+        <form id="login-form">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        id="toggle-password"
+                        class="password-toggle"
+                        aria-label="Show password"
+                    >
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <div
+                id="login-message"
+                class="login-message"
+                role="alert"
+                aria-live="polite"
+                hidden
+            ></div>
+
+            <button
+                type="submit"
+                id="login-button"
+                class="login-submit"
+            >
+                <span id="login-button-text">Sign In</span>
+                <span aria-hidden="true">&rarr;</span>
+            </button>
+
+        </form>
+
+        <div class="login-security">
+            <span class="security-dot"></span>
+            Secure account authentication
+        </div>
+
+        <p class="login-back">
+            <a href="/"> &larr; Back to home</a>
+        </p>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

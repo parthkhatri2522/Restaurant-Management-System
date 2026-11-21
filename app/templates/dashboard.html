@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}{{ dashboard.title }} | ServeWise{% endblock %}
+
+{% block head %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="dashboard-container">
+
+        <div class="dashboard-top">
+
+            <div class="dashboard-heading">
+                <span class="dashboard-eyebrow">
+                    SERVEWISE WORKSPACE
+                </span>
+
+                <h1>{{ dashboard.title }}</h1>
+
+                <p>{{ dashboard.description }}</p>
+            </div>
+
+            <div class="dashboard-user-card">
+                <div class="dashboard-avatar">
+                    {{ current_user.username[0]|upper }}
+                </div>
+
+                <div class="dashboard-user-info">
+                    <strong>{{ current_user.username }}</strong>
+                    <span>
+                        {{ user_role|replace('_', ' ')|title }}
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-welcome-banner">
+
+            <div>
+                <span class="welcome-label">
+                    YOUR WORKSPACE
+                </span>
+
+                <h2>
+                    Welcome back, {{ current_user.username }}!
+                </h2>
+
+                <p>
+                    Here's your workspace overview.
+                    Your dashboard is customized for your assigned role.
+                </p>
+            </div>
+
+            <div class="welcome-banner-symbol">
+                S
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-section-heading">
+
+            <div>
+                <span class="dashboard-eyebrow">
+                    WORKSPACE OVERVIEW
+                </span>
+
+                <h2>Your Dashboard Modules</h2>
+
+                <p>
+                    Access the information and activities relevant to your role.
+                </p>
+            </div>
+
+            <span class="widget-count">
+                {{ dashboard.widgets|length }} Modules
+            </span>
+
+        </div>
+
+
+        <div class="dashboard-widget-grid">
+
+            {% for widget in dashboard.widgets %}
+
+            <article class="dashboard-widget-card">
+
+                <div class="widget-card-top">
+
+                    <div class="widget-icon">
+                        {{ widget.title[0]|upper }}
+                    </div>
+
+                    <span class="widget-number">
+                        {{ "%02d"|format(loop.index) }}
+                    </span>
+
+                </div>
+
+                <div class="widget-card-content">
+
+                    <h3>{{ widget.title }}</h3>
+
+                    <p>{{ widget.description }}</p>
+
+                </div>
+
+                <div class="widget-card-footer">
+
+                    <span class="widget-source">
+                        {{ widget.data_source|replace('_', ' ')|title }}
+                    </span>
+
+                    <span class="widget-arrow">
+                        &rarr;
+                    </span>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="dashboard-account-section">
+
+            <div class="account-section-heading">
+                <div>
+                    <span class="dashboard-eyebrow">
+                        ACCOUNT INFORMATION
+                    </span>
+
+                    <h2>Your Account</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-account-card">
+
+                <div class="account-detail">
+                    <span>Username</span>
+                    <strong>{{ current_user.username }}</strong>
+                </div>
+
+                <div class="account-detail">
+                    <span>Assigned Role</span>
+                    <strong>
+                        {{ user_role|replace('_', ' ')|title }}
+                    </strong>
+                </div>
+
+                <div class="account-detail">
+                    <span>Account Status</span>
+                    <strong class="account-active">
+                        <span class="active-dot"></span>
+                        Active
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-signout">
+
+            <div>
+                <strong>Finished for now?</strong>
+                <p>Sign out securely from your ServeWise account.</p>
+            </div>
+
+            <button
+                type="button"
+                id="logout-button"
+                class="dashboard-logout-button"
+            >
+                Sign Out
+                <span aria-hidden="true">&rarr;</span>
+            </button>
+
+        </div>
+
+
+        <div
+            id="logout-message"
+            class="login-message"
+            role="alert"
+            aria-live="polite"
+            hidden
+        ></div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

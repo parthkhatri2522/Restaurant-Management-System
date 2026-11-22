@@ -6,15 +6,13 @@
 
     <title>{% block title %}ServeWise{% endblock %}</title>
 
-    <meta
-        name="description"
-        content="ServeWise - Restaurant Management System"
-    >
+    <meta name="description" content="ServeWise - Restaurant Management System">
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% if current_user.is_authenticated %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    {% endif %}
 
     {% block head %}{% endblock %}
 </head>
@@ -33,27 +31,110 @@
                 System Online
             </span>
 
-            <a href="/health" class="status-link">
-                Backend Status
-            </a>
+            <a href="/health" class="status-link">Backend Status</a>
+
+            {% if current_user.is_authenticated %}
+            <button
+                type="button"
+                class="mobile-menu-button"
+                id="mobile-menu-button"
+                aria-label="Open navigation"
+                aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            {% endif %}
         </div>
     </header>
 
-    <main>
+    {% if current_user.is_authenticated %}
+    <div class="app-layout">
+
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <aside class="sidebar" id="sidebar">
+
+            <div class="sidebar-heading">
+                <div>
+                    <span class="sidebar-eyebrow">WORKSPACE</span>
+                    <h2>Navigation</h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="sidebar-collapse-button"
+                    id="sidebar-collapse-button"
+                    aria-label="Collapse sidebar">
+                    ‹
+                </button>
+            </div>
+
+            <nav class="sidebar-navigation" aria-label="Main navigation">
+
+                <div class="sidebar-loading" id="sidebar-loading">
+                    Loading navigation...
+                </div>
+
+                <div class="sidebar-links" id="sidebar-links" hidden></div>
+
+                <div class="sidebar-error" id="sidebar-error" hidden>
+                    Navigation could not be loaded.
+                    <button type="button" id="sidebar-retry">Try again</button>
+                </div>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <div class="sidebar-user">
+                    <div class="sidebar-user-avatar">
+                        {{ current_user.username[0]|upper }}
+                    </div>
+
+                    <div class="sidebar-user-details">
+                        <strong>{{ current_user.username }}</strong>
+                        <span>
+                            {{ current_user.role|replace('_', ' ')|title }}
+                        </span>
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    class="sidebar-logout"
+                    id="sidebar-logout-button">
+                    <span class="sidebar-logout-icon">↪</span>
+                    <span>Sign Out</span>
+                </button>
+
+            </div>
+
+        </aside>
+    {% endif %}
+
+    <main class="{% if current_user.is_authenticated %}app-main{% endif %}">
         {% block content %}{% endblock %}
     </main>
 
+    {% if current_user.is_authenticated %}
+    </div>
+    {% endif %}
+
     <footer class="footer">
         <p>
-            &copy; <span id="current-year"></span> ServeWise.
-            Restaurant Management System.
+            &copy; <span id="current-year"></span>
+            ServeWise. Restaurant Management System.
         </p>
+
         <p>Designed for smarter restaurant operations.</p>
     </footer>
 
-    <script
-        src="{{ url_for('static', filename='js/app.js') }}"
-    ></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+    {% if current_user.is_authenticated %}
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    {% endif %}
 
     {% block scripts %}{% endblock %}
 

@@ -5,9 +5,11 @@
 {% block head %}
 <link rel="stylesheet"
       href="{{ url_for('static', filename='css/dashboard.css') }}">
+
 <link rel="stylesheet"
       href="{{ url_for('static', filename='css/login.css') }}">
 {% endblock %}
+
 
 {% block content %}
 
@@ -18,6 +20,7 @@
         <div class="dashboard-top">
 
             <div class="dashboard-heading">
+
                 <span class="dashboard-eyebrow">
                     SERVEWISE WORKSPACE
                 </span>
@@ -25,19 +28,23 @@
                 <h1>{{ dashboard.title }}</h1>
 
                 <p>{{ dashboard.description }}</p>
+
             </div>
 
             <div class="dashboard-user-card">
+
                 <div class="dashboard-avatar">
                     {{ current_user.username[0]|upper }}
                 </div>
 
                 <div class="dashboard-user-info">
                     <strong>{{ current_user.username }}</strong>
+
                     <span>
                         {{ user_role|replace('_', ' ')|title }}
                     </span>
                 </div>
+
             </div>
 
         </div>
@@ -46,6 +53,7 @@
         <div class="dashboard-welcome-banner">
 
             <div>
+
                 <span class="welcome-label">
                     YOUR WORKSPACE
                 </span>
@@ -58,6 +66,7 @@
                     Here's your workspace overview.
                     Your dashboard is customized for your assigned role.
                 </p>
+
             </div>
 
             <div class="welcome-banner-symbol">
@@ -70,6 +79,7 @@
         <div class="dashboard-section-heading">
 
             <div>
+
                 <span class="dashboard-eyebrow">
                     WORKSPACE OVERVIEW
                 </span>
@@ -79,6 +89,7 @@
                 <p>
                     Access the information and activities relevant to your role.
                 </p>
+
             </div>
 
             <span class="widget-count">
@@ -120,9 +131,7 @@
                         {{ widget.data_source|replace('_', ' ')|title }}
                     </span>
 
-                    <span class="widget-arrow">
-                        &rarr;
-                    </span>
+                    <span class="widget-arrow">&rarr;</span>
 
                 </div>
 
@@ -136,6 +145,7 @@
         <div class="dashboard-account-section">
 
             <div class="account-section-heading">
+
                 <div>
                     <span class="dashboard-eyebrow">
                         ACCOUNT INFORMATION
@@ -143,7 +153,9 @@
 
                     <h2>Your Account</h2>
                 </div>
+
             </div>
+
 
             <div class="dashboard-account-card">
 
@@ -154,6 +166,7 @@
 
                 <div class="account-detail">
                     <span>Assigned Role</span>
+
                     <strong>
                         {{ user_role|replace('_', ' ')|title }}
                     </strong>
@@ -161,6 +174,7 @@
 
                 <div class="account-detail">
                     <span>Account Status</span>
+
                     <strong class="account-active">
                         <span class="active-dot"></span>
                         Active

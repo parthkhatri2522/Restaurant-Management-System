@@ -16,6 +16,14 @@ TABLE_VIEW_ROLES = (
     "system_administrator"
 )
 
+RESERVATION_VIEW_ROLES = (
+    "restaurant_owner",
+    "general_manager",
+    "assistant_manager",
+    "host",
+    "system_administrator"
+)
+
 
 @web_bp.route("/", methods=["GET"])
 def home():
@@ -34,7 +42,6 @@ def login_page():
 @login_required
 def dashboard_page():
     user_role = current_user.role
-
     dashboard = DASHBOARD_CONFIG.get(user_role)
 
     if dashboard is None:
@@ -57,3 +64,10 @@ def employees_page():
 @role_required(*TABLE_VIEW_ROLES)
 def tables_page():
     return render_template("tables.html")
+
+
+@web_bp.route("/reservations", methods=["GET"])
+@login_required
+@role_required(*RESERVATION_VIEW_ROLES)
+def reservations_page():
+    return render_template("reservations.html")

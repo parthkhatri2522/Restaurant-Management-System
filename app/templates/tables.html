@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Table Management | ServeWise{% endblock %}
+
+{% block head %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/tables.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="tables-page">
+
+    <div class="tables-heading">
+        <div>
+            <span class="tables-eyebrow">RESTAURANT OPERATIONS</span>
+            <h1>Table Management</h1>
+            <p>Monitor dining tables and manage their availability.</p>
+        </div>
+
+        <button
+            type="button"
+            class="primary-button"
+            id="add-table-button"
+        >
+            <span>+</span> Add New Table
+        </button>
+    </div>
+
+    <div class="table-statistics">
+
+        <article class="stat-card">
+            <div class="stat-icon total-icon">▦</div>
+            <div>
+                <span>Total Tables</span>
+                <strong id="total-tables">0</strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon available-icon">✓</div>
+            <div>
+                <span>Available</span>
+                <strong id="available-tables">0</strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon occupied-icon">●</div>
+            <div>
+                <span>Occupied</span>
+                <strong id="occupied-tables">0</strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon reserved-icon">◷</div>
+            <div>
+                <span>Reserved</span>
+                <strong id="reserved-tables">0</strong>
+            </div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon maintenance-icon">⚙</div>
+            <div>
+                <span>Maintenance</span>
+                <strong id="maintenance-tables">0</strong>
+            </div>
+        </article>
+
+    </div>
+
+    <div class="table-content-card">
+
+        <div class="table-toolbar">
+            <div>
+                <h2>Dining Tables</h2>
+                <p>View and update your restaurant seating arrangement.</p>
+            </div>
+
+            <div class="table-filters">
+
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input
+                        type="search"
+                        id="table-search"
+                        placeholder="Search table number..."
+                    >
+                </div>
+
+                <select id="status-filter">
+                    <option value="all">All Statuses</option>
+                    <option value="available">Available</option>
+                    <option value="occupied">Occupied</option>
+                    <option value="reserved">Reserved</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+
+                <select id="active-filter">
+                    <option value="all">All Tables</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div
+            id="table-message"
+            class="table-message"
+            role="status"
+            aria-live="polite"
+            hidden
+        ></div>
+
+        <div class="table-grid" id="table-grid">
+
+            <div class="loading-state">
+                Loading dining tables...
+            </div>
+
+        </div>
+
+        <div class="empty-state" id="empty-state" hidden>
+            <div class="empty-icon">▦</div>
+            <h3>No tables found</h3>
+            <p>Try changing your filters or add a new dining table.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<div class="modal-overlay" id="table-modal" hidden>
+
+    <div
+        class="table-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+    >
+
+        <div class="modal-heading">
+
+            <div>
+                <span class="tables-eyebrow">TABLE CONFIGURATION</span>
+                <h2 id="modal-title">Add New Table</h2>
+                <p>Enter the dining table information below.</p>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                id="close-modal-button"
+                aria-label="Close dialog"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <form id="table-form">
+
+            <div class="form-group">
+                <label for="table-number">Table Number</label>
+                <input
+                    type="text"
+                    id="table-number"
+                    name="table_number"
+                    placeholder="Example: T-01"
+                    maxlength="20"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="table-capacity">Seating Capacity</label>
+                <input
+                    type="number"
+                    id="table-capacity"
+                    name="capacity"
+                    min="1"
+                    placeholder="Example: 4"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="table-status">Table Status</label>
+                <select id="table-status" name="status" required>
+                    <option value="available">Available</option>
+                    <option value="occupied">Occupied</option>
+                    <option value="reserved">Reserved</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <label for="table-active">
+                    <input
+                        type="checkbox"
+                        id="table-active"
+                        name="is_active"
+                        checked
+                    >
+                    Table is active
+                </label>
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-button"
+                    id="cancel-modal-button"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    id="save-table-button"
+                >
+                    Save Table
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tables.js') }}"></script>
+{% endblock %}

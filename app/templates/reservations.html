@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Reservation Management | ServeWise{% endblock %}
 
@@ -7,213 +7,146 @@
 {% endblock %}
 
 {% block content %}
-<div class="reservations-page">
-
-    <div class="reservation-heading">
+<section class="reservation-page">
+    <div class="page-heading">
         <div>
-            <span class="page-eyebrow">RESTAURANT OPERATIONS</span>
+            <span class="eyebrow">RESTAURANT OPERATIONS</span>
             <h1>Reservation Management</h1>
-            <p>Manage guest bookings, seating and reservation schedules.</p>
+            <p>Manage bookings, track guest schedules and organize table assignments.</p>
         </div>
-
-        <button class="primary-button" id="add-reservation-btn">
-            <span>＋</span> Add Reservation
-        </button>
-    </div>
-
-    <div class="reservation-stats">
-        <div class="stat-card">
-            <div class="stat-icon total-icon">▦</div>
-            <div>
-                <span>Total Reservations</span>
-                <strong id="total-count">0</strong>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon pending-icon">◷</div>
-            <div>
-                <span>Pending</span>
-                <strong id="pending-count">0</strong>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon confirmed-icon">✓</div>
-            <div>
-                <span>Confirmed</span>
-                <strong id="confirmed-count">0</strong>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon seated-icon">♟</div>
-            <div>
-                <span>Completed</span>
-                <strong id="completed-count">0</strong>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon cancelled-icon">×</div>
-            <div>
-                <span>Cancelled</span>
-                <strong id="cancelled-count">0</strong>
-            </div>
+        <div class="heading-actions">
+            <button class="btn btn-outline" id="export-reservations">Export CSV</button>
+            <button class="btn btn-primary" id="add-reservation">Add Reservation</button>
         </div>
     </div>
 
-    <section class="reservation-panel">
-        <div class="panel-heading">
+    <div id="reservation-message" class="message" role="status" aria-live="polite" hidden></div>
+
+    <div class="stats-grid">
+        <article class="stat-card"><span>Total reservations</span><strong id="total-count">0</strong><small>All bookings</small></article>
+        <article class="stat-card"><span>Pending</span><strong id="pending-count">0</strong><small>Awaiting confirmation</small></article>
+        <article class="stat-card"><span>Confirmed</span><strong id="confirmed-count">0</strong><small>Confirmed bookings</small></article>
+        <article class="stat-card"><span>Completed</span><strong id="completed-count">0</strong><small>Completed visits</small></article>
+        <article class="stat-card"><span>Cancelled</span><strong id="cancelled-count">0</strong><small>Cancelled bookings</small></article>
+    </div>
+
+    <section class="schedule-panel">
+        <div class="section-heading">
             <div>
-                <h2>All Reservations</h2>
-                <p>View and manage your restaurant bookings.</p>
+                <h2>Reservation schedule</h2>
+                <p>Switch between calendar and list views.</p>
             </div>
-            <span id="reservation-total-label">0 reservations</span>
+            <div class="view-switch">
+                <button class="view-button active" data-view="calendar" type="button">Calendar</button>
+                <button class="view-button" data-view="list" type="button">List</button>
+            </div>
         </div>
 
-        <div class="reservation-filters">
-            <div class="search-box">
-                <span>⌕</span>
-                <input
-                    type="search"
-                    id="reservation-search"
-                    placeholder="Search customer name or phone..."
-                >
+        <div class="schedule-toolbar">
+            <div class="calendar-navigation">
+                <button id="previous-month" class="icon-button" type="button" aria-label="Previous month">&#8249;</button>
+                <h3 id="calendar-month-label">Month Year</h3>
+                <button id="next-month" class="icon-button" type="button" aria-label="Next month">&#8250;</button>
+                <button id="today-button" class="btn btn-outline btn-small" type="button">Today</button>
+            </div>
+            <div class="quick-filters">
+                <button class="quick-filter active" data-period="all" type="button">All</button>
+                <button class="quick-filter" data-period="today" type="button">Today</button>
+                <button class="quick-filter" data-period="upcoming" type="button">Upcoming</button>
+                <button class="quick-filter" data-period="past" type="button">Past</button>
+            </div>
+        </div>
+
+        <div id="calendar-view" class="calendar-view">
+            <div class="calendar-grid calendar-weekdays">
+                <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+                <span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div id="calendar-days" class="calendar-grid calendar-days"></div>
+        </div>
+
+        <div id="list-view" class="list-view" hidden>
+            <div class="filter-row">
+                <input id="reservation-search" type="search" placeholder="Search guest, phone or table...">
+                <select id="status-filter">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <input id="date-filter" type="date" aria-label="Filter by date">
+                <button id="clear-filters" class="btn btn-outline" type="button">Clear filters</button>
             </div>
 
-            <select id="status-filter">
-                <option value="">All statuses</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-            </select>
-
-            <input type="date" id="date-filter" aria-label="Filter by date">
-
-            <button class="secondary-button" id="clear-filters-btn">
-                Clear Filters
-            </button>
-        </div>
-
-        <div id="reservation-message" class="reservation-message" role="status"></div>
-
-        <div class="reservation-table-wrapper">
-            <table class="reservation-table">
-                <thead>
-                    <tr>
-                        <th>Guest</th>
-                        <th>Contact</th>
-                        <th>Date & Time</th>
-                        <th>Guests</th>
-                        <th>Table</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="reservation-list">
-                    <tr>
-                        <td colspan="7" class="loading-cell">
-                            Loading reservations...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="reservation-empty" class="empty-state" hidden>
-            <div class="empty-icon">▦</div>
-            <h3>No reservations found</h3>
-            <p>Try changing your filters or create a new reservation.</p>
+            <div class="table-wrapper">
+                <table class="reservation-table">
+                    <thead>
+                        <tr>
+                            <th>Guest</th><th>Contact</th><th>Date &amp; time</th>
+                            <th>Guests</th><th>Table</th><th>Status</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservation-rows">
+                        <tr><td colspan="7" class="empty-state">Loading reservations...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
-</div>
 
-<div class="modal-overlay" id="reservation-modal" hidden>
-    <div class="reservation-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <section class="day-panel">
+        <div class="section-heading">
+            <div>
+                <h2 id="selected-day-heading">Selected day</h2>
+                <p id="selected-day-description">Reservations scheduled for this date.</p>
+            </div>
+            <span id="selected-day-count" class="day-count">0 bookings</span>
+        </div>
+        <div id="selected-day-reservations" class="day-reservations">
+            <p class="empty-state">Select a date to see its reservations.</p>
+        </div>
+    </section>
+</section>
 
+<div id="reservation-modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-heading">
             <div>
-                <span class="page-eyebrow">GUEST BOOKING</span>
-                <h2 id="modal-title">Add Reservation</h2>
-                <p>Enter the guest and booking details below.</p>
+                <span class="eyebrow">GUEST BOOKING</span>
+                <h2 id="modal-title">New reservation</h2>
             </div>
-            <button type="button" class="close-modal" id="close-modal-btn" aria-label="Close">
-                ×
-            </button>
+            <button type="button" class="icon-button" id="close-modal" aria-label="Close">&times;</button>
         </div>
 
         <form id="reservation-form">
+            <input type="hidden" id="reservation-id">
             <div class="form-grid">
-
-                <div class="form-field full-width">
-                    <label for="customer-name">Customer Name *</label>
-                    <input
-                        type="text"
-                        id="customer-name"
-                        name="customer_name"
-                        placeholder="Enter customer name"
-                        required
-                        maxlength="120"
-                    >
-                </div>
-
-                <div class="form-field">
-                    <label for="customer-phone">Phone Number *</label>
-                    <input
-                        type="tel"
-                        id="customer-phone"
-                        name="customer_phone"
-                        placeholder="Enter phone number"
-                        required
-                        maxlength="20"
-                    >
-                </div>
-
-                <div class="form-field">
-                    <label for="party-size">Number of Guests *</label>
-                    <input
-                        type="number"
-                        id="party-size"
-                        name="party_size"
-                        min="1"
-                        max="100"
-                        value="2"
-                        required
-                    >
-                </div>
-
-                <div class="form-field full-width">
-                    <label for="reservation-time">Reservation Date & Time *</label>
-                    <input
-                        type="datetime-local"
-                        id="reservation-time"
-                        name="reservation_time"
-                        required
-                    >
-                </div>
-
-                <div class="form-field full-width">
-                    <label for="table-id">Assign Dining Table</label>
-                    <select id="table-id" name="table_id">
+                <label>Customer name
+                    <input id="customer-name" type="text" maxlength="120" required>
+                </label>
+                <label>Phone number
+                    <input id="customer-phone" type="tel" maxlength="20" required>
+                </label>
+                <label>Party size
+                    <input id="party-size" type="number" min="1" step="1" required>
+                </label>
+                <label>Reservation date and time
+                    <input id="reservation-time" type="datetime-local" required>
+                </label>
+                <label class="full-width">Assign table
+                    <select id="table-id">
                         <option value="">No table assigned</option>
                     </select>
-                    <small>Only active dining tables are available.</small>
-                </div>
-
+                </label>
             </div>
-
             <div class="modal-actions">
-                <button type="button" class="secondary-button" id="cancel-modal-btn">
-                    Cancel
-                </button>
-                <button type="submit" class="primary-button" id="save-reservation-btn">
-                    Save Reservation
-                </button>
+                <button type="button" class="btn btn-outline" id="cancel-modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="save-reservation">Save reservation</button>
             </div>
         </form>
-    </div>
+    </section>
 </div>
 {% endblock %}
 

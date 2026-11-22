@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Management | ServeWise{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/employees.css') }}">
+
+<section class="employees-page">
+
+  <header class="employees-heading">
+    <div>
+      <p class="eyebrow">PEOPLE OPERATIONS</p>
+      <h1>Employee Management</h1>
+      <p class="page-subtitle">
+        Manage your restaurant team, employee details and employment status.
+      </p>
+    </div>
+
+    {% if current_user.role in ["restaurant_owner", "general_manager", "hr_manager"] %}
+    <button class="primary-button" id="add-employee-button" type="button">
+      ＋ Add employee
+    </button>
+    {% endif %}
+  </header>
+
+  <div class="employee-stats">
+
+    <article class="stat-card">
+      <span>Total employees</span>
+      <strong id="total-count">0</strong>
+      <small>All employee records</small>
+    </article>
+
+    <article class="stat-card">
+      <span>Active employees</span>
+      <strong id="active-count">0</strong>
+      <small>Currently active</small>
+    </article>
+
+    <article class="stat-card">
+      <span>Inactive employees</span>
+      <strong id="inactive-count">0</strong>
+      <small>Not currently active</small>
+    </article>
+
+  </div>
+
+  <section class="directory-card">
+
+    <div class="directory-header">
+      <div>
+        <h2>Team directory</h2>
+        <p>Search and manage employee records.</p>
+      </div>
+
+      <span id="record-count">0 records</span>
+    </div>
+
+    <div class="employee-filters">
+
+      <input
+        id="employee-search"
+        type="search"
+        placeholder="Search name, code, email or job title"
+      >
+
+      <select id="department-filter">
+        <option value="">All departments</option>
+      </select>
+
+      <select id="status-filter">
+        <option value="">All statuses</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+
+    </div>
+
+    <div id="employee-message" role="status"></div>
+
+    <div class="table-scroll">
+      <table class="employee-table">
+
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Code</th>
+            <th>Department</th>
+            <th>Job title</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="employee-table-body">
+          <tr>
+            <td colspan="6">Loading employees...</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </section>
+
+</section>
+
+
+<div class="modal-backdrop" id="employee-modal" aria-hidden="true">
+
+  <section class="employee-modal" role="dialog" aria-modal="true">
+
+    <div class="modal-heading">
+
+      <div>
+        <p class="eyebrow">EMPLOYEE RECORD</p>
+        <h2 id="modal-title">Add employee</h2>
+      </div>
+
+      <button
+        class="close-modal"
+        id="close-modal-button"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <form id="employee-form">
+
+      <input type="hidden" id="employee-id">
+
+      <div class="form-grid">
+
+        <label>
+          Employee code *
+          <input
+            id="employee-code"
+            required
+            maxlength="20"
+            placeholder="EMP-001"
+          >
+        </label>
+
+        <label>
+          First name *
+          <input id="first-name" required maxlength="80">
+        </label>
+
+        <label>
+          Last name *
+          <input id="last-name" required maxlength="80">
+        </label>
+
+        <label>
+          Email
+          <input id="employee-email" type="email" maxlength="120">
+        </label>
+
+        <label>
+          Phone
+          <input id="employee-phone" maxlength="20">
+        </label>
+
+        <label>
+          Department
+          <input id="employee-department" maxlength="80">
+        </label>
+
+        <label>
+          Job title
+          <input id="employee-job-title" maxlength="80">
+        </label>
+
+        <label>
+          Hire date
+          <input id="hire-date" type="date">
+        </label>
+
+        <label>
+          Status
+          <select id="employment-status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </label>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          class="secondary-button"
+          id="cancel-modal-button"
+          type="button"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="primary-button"
+          id="save-employee-button"
+          type="submit"
+        >
+          Save employee
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
+</div>
+
+<script
+  src="{{ url_for('static', filename='js/employees.js') }}"
+  defer
+></script>
+
+{% endblock %}

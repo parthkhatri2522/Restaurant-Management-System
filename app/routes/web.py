@@ -1,7 +1,9 @@
+
 from flask import Blueprint, render_template, redirect, url_for, abort
 from flask_login import current_user, login_required
 
 from app.dashboards import DASHBOARD_CONFIG
+from app.permissions import permission_required
 
 
 web_bp = Blueprint("web", __name__)
@@ -35,3 +37,9 @@ def dashboard_page():
         dashboard=dashboard,
         user_role=user_role
     )
+
+
+@web_bp.route("/employees", methods=["GET"])
+@permission_required("employees.view")
+def employees_page():
+    return render_template("employees.html")

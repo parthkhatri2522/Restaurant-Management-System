@@ -45,12 +45,13 @@ ROLE_PERMISSIONS = {
     "assistant_manager": DASHBOARD | frozenset({
         "employees.view", "attendance.view", "shifts.manage", "tables.view",
         "tables.manage", "reservations.view", "reservations.manage", "orders.view",
-        "orders.manage", "kitchen.view", "quality.view", "complaints.view"
+        "orders.manage", "menu.view", "kitchen.view", "quality.view",
+        "complaints.view"
     }),
 
     "cashier": DASHBOARD | frozenset({
         "orders.view", "billing.view", "billing.manage", "payments.view",
-        "payments.manage", "reservations.view"
+        "payments.manage", "reservations.view", "menu.view"
     }),
 
     "accountant": DASHBOARD | frozenset({

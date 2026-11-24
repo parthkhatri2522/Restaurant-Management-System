@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Order Management | ServeWise{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="orders-page">
+    <div class="orders-heading">
+        <div>
+            <p class="eyebrow">RESTAURANT OPERATIONS</p>
+            <h1>Order Management</h1>
+            <p class="page-subtitle">Create, monitor and manage customer orders.</p>
+        </div>
+        <button class="primary-button" id="addOrderBtn" type="button">
+            <span>＋</span> Create New Order
+        </button>
+    </div>
+
+    <div class="order-statistics">
+        <div class="stat-card">
+            <div class="stat-icon orange">▤</div>
+            <div>
+                <p>Total Orders</p>
+                <h2 id="totalOrders">0</h2>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue">◷</div>
+            <div>
+                <p>Pending</p>
+                <h2 id="pendingOrders">0</h2>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">♨</div>
+            <div>
+                <p>Preparing</p>
+                <h2 id="preparingOrders">0</h2>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <div>
+                <p>Completed</p>
+                <h2 id="completedOrders">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <section class="orders-panel">
+        <div class="panel-heading">
+            <div>
+                <h2>All Orders</h2>
+                <p>Review and manage restaurant orders.</p>
+            </div>
+            <button class="secondary-button" id="refreshOrdersBtn" type="button">
+                ↻ Refresh
+            </button>
+        </div>
+
+        <div class="order-filters">
+            <div class="search-box">
+                <span>⌕</span>
+                <input id="orderSearch" type="search"
+                       placeholder="Search order number or customer...">
+            </div>
+
+            <select id="statusFilter" aria-label="Filter by status">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="preparing">Preparing</option>
+                <option value="ready">Ready</option>
+                <option value="served">Served</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+
+            <select id="typeFilter" aria-label="Filter by order type">
+                <option value="">All Order Types</option>
+                <option value="dine_in">Dine In</option>
+                <option value="takeaway">Takeaway</option>
+                <option value="delivery">Delivery</option>
+            </select>
+        </div>
+
+        <div id="ordersMessage" class="orders-message" role="status"></div>
+
+        <div class="table-responsive">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Order Type</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">Loading orders...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="orders-footer">
+            <span id="ordersCount">Showing 0 orders</span>
+        </div>
+    </section>
+</div>
+
+<div class="modal-overlay" id="orderModal" aria-hidden="true">
+    <div class="modal-card order-modal">
+        <div class="modal-heading">
+            <div>
+                <p class="eyebrow">ORDER MANAGEMENT</p>
+                <h2 id="orderModalTitle">Create New Order</h2>
+            </div>
+            <button class="close-button" id="closeOrderModal" type="button"
+                    aria-label="Close">×</button>
+        </div>
+
+        <form id="orderForm">
+            <input type="hidden" id="editingOrderId">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="customerName">Customer Name *</label>
+                    <input id="customerName" type="text" maxlength="120"
+                           placeholder="Enter customer name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="orderType">Order Type *</label>
+                    <select id="orderType" required>
+                        <option value="dine_in">Dine In</option>
+                        <option value="takeaway">Takeaway</option>
+                        <option value="delivery">Delivery</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tableId">Table ID (optional)</label>
+                    <input id="tableId" type="number" min="1"
+                           placeholder="Enter table ID">
+                </div>
+
+                <div class="form-group">
+                    <label for="discountAmount">Discount Amount (₹)</label>
+                    <input id="discountAmount" type="number" min="0"
+                           step="0.01" value="0">
+                </div>
+            </div>
+
+            <div class="order-items-heading">
+                <div>
+                    <h3>Order Items</h3>
+                    <p>Select menu items and quantities.</p>
+                </div>
+                <button class="secondary-button" id="addOrderItemBtn"
+                        type="button">＋ Add Item</button>
+            </div>
+
+            <div id="orderItemsContainer"></div>
+
+            <div class="form-group">
+                <label for="orderNotes">Additional notes</label>
+                <textarea id="orderNotes" rows="2"
+                          placeholder="Optional order notes"></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="secondary-button" id="cancelOrderBtn"
+                        type="button">Cancel</button>
+                <button class="primary-button" id="saveOrderBtn"
+                        type="submit">Create Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="orderDetailsModal" aria-hidden="true">
+    <div class="modal-card details-modal">
+        <div class="modal-heading">
+            <div>
+                <p class="eyebrow">ORDER INFORMATION</p>
+                <h2>Order Details</h2>
+            </div>
+            <button class="close-button" id="closeDetailsModal" type="button"
+                    aria-label="Close">×</button>
+        </div>
+        <div id="orderDetailsContent"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/orders.js') }}"></script>
+{% endblock %}

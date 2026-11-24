@@ -24,6 +24,13 @@ RESERVATION_VIEW_ROLES = (
     "system_administrator"
 )
 
+ORDER_VIEW_ROLES = (
+    "general_manager",
+    "assistant_manager",
+    "cashier",
+    "waiter"
+)
+
 
 @web_bp.route("/", methods=["GET"])
 def home():
@@ -71,3 +78,10 @@ def tables_page():
 @role_required(*RESERVATION_VIEW_ROLES)
 def reservations_page():
     return render_template("reservations.html")
+
+
+@web_bp.route("/orders", methods=["GET"])
+@login_required
+@role_required(*ORDER_VIEW_ROLES)
+def orders_page():
+    return render_template("orders.html")

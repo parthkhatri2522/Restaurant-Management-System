@@ -7,7 +7,6 @@ from app.permissions import permission_required, role_required
 
 web_bp = Blueprint("web", __name__)
 
-
 TABLE_VIEW_ROLES = (
     "restaurant_owner",
     "general_manager",
@@ -31,6 +30,15 @@ ORDER_VIEW_ROLES = (
     "waiter"
 )
 
+BILLING_VIEW_ROLES = (
+    "restaurant_owner",
+    "general_manager",
+    "assistant_manager",
+    "cashier",
+    "accountant",
+    "system_administrator"
+)
+
 
 @web_bp.route("/", methods=["GET"])
 def home():
@@ -41,7 +49,6 @@ def home():
 def login_page():
     if current_user.is_authenticated:
         return redirect(url_for("web.dashboard_page"))
-
     return render_template("login.html")
 
 
@@ -50,7 +57,6 @@ def login_page():
 def dashboard_page():
     user_role = current_user.role
     dashboard = DASHBOARD_CONFIG.get(user_role)
-
     if dashboard is None:
         abort(404)
 
@@ -85,3 +91,10 @@ def reservations_page():
 @role_required(*ORDER_VIEW_ROLES)
 def orders_page():
     return render_template("orders.html")
+
+
+@web_bp.route("/billing", methods=["GET"])
+@login_required
+@role_required(*BILLING_VIEW_ROLES)
+def billing_page():
+    return render_template("billing.html")

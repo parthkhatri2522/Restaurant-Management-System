@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}Billing & Payments | ServeWise{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/billing.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="billing-page">
+    <section class="billing-heading">
+        <div>
+            <span class="billing-eyebrow">FINANCE / OPERATIONS</span>
+            <h1>Billing & Payments</h1>
+            <p>Manage customer bills, collect payments and track outstanding balances.</p>
+        </div>
+        <button type="button" class="billing-refresh" id="refresh-orders">Refresh orders</button>
+    </section>
+
+    <section class="billing-toolbar">
+        <div class="billing-search">
+            <label for="order-search">Search orders</label>
+            <input id="order-search" type="search" placeholder="Search order number or customer">
+        </div>
+        <div class="billing-filter">
+            <label for="order-status-filter">Order status</label>
+            <select id="order-status-filter">
+                <option value="">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="preparing">Preparing</option>
+                <option value="ready">Ready</option>
+                <option value="served">Served</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="billing-manual">
+            <label for="manual-order-id">Or enter order ID</label>
+            <div class="manual-order-control">
+                <input id="manual-order-id" type="number" min="1" placeholder="Order ID">
+                <button type="button" id="load-order-button">Load</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="billing-message" class="billing-message" role="status" aria-live="polite"></div>
+
+    <section class="billing-layout">
+        <aside class="orders-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Orders</h2>
+                    <span id="orders-count">Loading orders...</span>
+                </div>
+            </div>
+            <div id="orders-list" class="orders-list">
+                <div class="billing-empty">Loading orders...</div>
+            </div>
+        </aside>
+
+        <div class="billing-main">
+            <section class="bill-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-kicker">CUSTOMER INVOICE</span>
+                        <h2>Bill details</h2>
+                    </div>
+                    <span id="bill-order-status" class="status-pill">No order selected</span>
+                </div>
+
+                <div id="bill-placeholder" class="billing-empty bill-placeholder">
+                    Select an order to view its bill.
+                </div>
+
+                <div id="bill-content" hidden>
+                    <div class="bill-meta">
+                        <div>
+                            <span>Order number</span>
+                            <strong id="bill-order-number">—</strong>
+                        </div>
+                        <div>
+                            <span>Customer</span>
+                            <strong id="bill-customer">—</strong>
+                        </div>
+                        <div>
+                            <span>Order type</span>
+                            <strong id="bill-order-type">—</strong>
+                        </div>
+                        <div>
+                            <span>Order ID</span>
+                            <strong id="bill-order-id">—</strong>
+                        </div>
+                    </div>
+
+                    <div class="bill-table-wrap">
+                        <table class="bill-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Unit price</th>
+                                    <th class="align-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bill-items"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="bill-totals">
+                        <div><span>Subtotal</span><strong id="bill-subtotal">₹0.00</strong></div>
+                        <div><span>Discount</span><strong id="bill-discount">₹0.00</strong></div>
+                        <div><span>GST / Tax</span><strong id="bill-tax">₹0.00</strong></div>
+                        <div class="bill-grand-total"><span>Amount payable</span><strong id="bill-total">₹0.00</strong></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="payment-summary-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-kicker">PAYMENT OVERVIEW</span>
+                        <h2>Payment summary</h2>
+                    </div>
+                    <span id="payment-state" class="status-pill">Not loaded</span>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <span>Order total</span>
+                        <strong id="summary-total">₹0.00</strong>
+                    </div>
+                    <div class="summary-card">
+                        <span>Paid amount</span>
+                        <strong id="summary-paid">₹0.00</strong>
+                    </div>
+                    <div class="summary-card">
+                        <span>Refunded amount</span>
+                        <strong id="summary-refunded">₹0.00</strong>
+                    </div>
+                    <div class="summary-card outstanding-card">
+                        <span>Outstanding</span>
+                        <strong id="summary-outstanding">₹0.00</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="payment-workspace">
+                <div class="payment-form-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="section-kicker">COLLECT PAYMENT</span>
+                            <h2>Record a payment</h2>
+                        </div>
+                    </div>
+
+                    <form id="payment-form">
+                        <div class="form-field">
+                            <label for="payment-amount">Payment amount (₹)</label>
+                            <input id="payment-amount" type="number" min="0.01" step="0.01" required placeholder="Enter amount">
+                        </div>
+
+                        <div class="form-field">
+                            <label for="payment-method">Payment method</label>
+                            <select id="payment-method" required>
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="upi">UPI</option>
+                                <option value="online">Online</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field" id="transaction-reference-field" hidden>
+                            <label for="transaction-reference">Transaction reference</label>
+                            <input id="transaction-reference" maxlength="120" placeholder="Enter transaction reference">
+                        </div>
+
+                        <p class="form-hint">Cash payments are completed immediately. Digital payments are recorded as pending until confirmed.</p>
+                        <button type="submit" class="primary-action" id="record-payment-button" disabled>Record payment</button>
+                    </form>
+                </div>
+
+                <div class="payment-history-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="section-kicker">TRANSACTION RECORDS</span>
+                            <h2>Payment history</h2>
+                        </div>
+                    </div>
+
+                    <div class="payment-history-wrap">
+                        <table class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th>Method</th>
+                                    <th>Amount</th>
+                                    <th>Reference</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payment-history">
+                                <tr><td colspan="5" class="table-empty">Select an order to view payments.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/billing.js') }}"></script>
+{% endblock %}

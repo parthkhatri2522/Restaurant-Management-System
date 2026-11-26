@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Kitchen Management | ServeWise{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kitchen.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="kitchen-page" data-user-role="{{ current_user.role }}">
+
+    <header class="kitchen-header">
+        <div>
+            <p class="kitchen-eyebrow">SERVEWISE OPERATIONS</p>
+            <h1>Kitchen Order Management</h1>
+            <p class="kitchen-description">
+                Monitor incoming orders and manage kitchen preparation.
+            </p>
+        </div>
+
+        <div class="kitchen-header-actions">
+            <a href="{{ url_for('web.dashboard_page') }}" class="kitchen-back-link">
+                Back to Dashboard
+            </a>
+            <button type="button" id="refresh-orders-button" class="kitchen-refresh-button">
+                <span aria-hidden="true">↻</span> Refresh Orders
+            </button>
+        </div>
+    </header>
+
+    <div id="kitchen-alert" class="kitchen-alert" role="alert" hidden></div>
+
+    <section class="kitchen-stats">
+        <article class="kitchen-stat-card">
+            <span class="stat-label">Pending</span>
+            <strong id="pending-count">0</strong>
+            <span class="stat-description">Awaiting preparation</span>
+        </article>
+        <article class="kitchen-stat-card">
+            <span class="stat-label">Confirmed</span>
+            <strong id="confirmed-count">0</strong>
+            <span class="stat-description">Confirmed orders</span>
+        </article>
+        <article class="kitchen-stat-card">
+            <span class="stat-label">Preparing</span>
+            <strong id="preparing-count">0</strong>
+            <span class="stat-description">Currently in kitchen</span>
+        </article>
+        <article class="kitchen-stat-card">
+            <span class="stat-label">Ready</span>
+            <strong id="ready-count">0</strong>
+            <span class="stat-description">Ready to serve</span>
+        </article>
+    </section>
+
+    <section class="kitchen-orders-section">
+        <div class="kitchen-orders-heading">
+            <div>
+                <h2>Kitchen Orders</h2>
+                <p>Orders are displayed from oldest to newest.</p>
+            </div>
+            <span id="orders-total" class="orders-total">0 orders</span>
+        </div>
+
+        <div class="kitchen-filter-bar">
+            <label for="status-filter">Filter by status</label>
+            <select id="status-filter">
+                <option value="all">All Active Orders</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="preparing">Preparing</option>
+                <option value="ready">Ready</option>
+            </select>
+
+            <label for="order-search" class="search-label">Search</label>
+            <input
+                type="search"
+                id="order-search"
+                placeholder="Search order or customer..."
+                autocomplete="off"
+            >
+        </div>
+
+        <div id="kitchen-loading" class="kitchen-loading" hidden>
+            Loading kitchen orders...
+        </div>
+
+        <div id="kitchen-empty" class="kitchen-empty" hidden>
+            <div class="empty-icon">✓</div>
+            <h3>No orders found</h3>
+            <p>There are no orders matching the selected filter.</p>
+        </div>
+
+        <div id="kitchen-orders-list" class="kitchen-orders-list"></div>
+    </section>
+
+    <div class="kitchen-footer">
+        <span>ServeWise Kitchen Management</span>
+        <span id="last-updated">Not refreshed yet</span>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/kitchen.js') }}" defer></script>
+{% endblock %}

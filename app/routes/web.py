@@ -48,6 +48,16 @@ INVOICE_VIEW_ROLES = (
     "system_administrator"
 )
 
+KITCHEN_VIEW_ROLES = (
+    "restaurant_owner",
+    "general_manager",
+    "assistant_manager",
+    "head_chef",
+    "kitchen_staff",
+    "quality_officer",
+    "system_administrator"
+)
+
 
 @web_bp.route("/", methods=["GET"])
 def home():
@@ -115,3 +125,10 @@ def billing_page():
 @role_required(*INVOICE_VIEW_ROLES)
 def invoices_page():
     return render_template("invoices.html")
+
+
+@web_bp.route("/kitchen", methods=["GET"])
+@login_required
+@role_required(*KITCHEN_VIEW_ROLES)
+def kitchen_page():
+    return render_template("kitchen.html")

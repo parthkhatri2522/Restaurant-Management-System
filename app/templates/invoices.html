@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}GST & Invoice Management | ServeWise{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/invoices.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="invoice-page">
+
+    <div class="invoice-heading">
+        <div>
+            <p class="eyebrow">FINANCE MANAGEMENT</p>
+            <h1>GST & Invoice Management</h1>
+            <p class="page-description">
+                Configure GST details, generate tax invoices and retrieve existing invoices.
+            </p>
+        </div>
+
+        <a href="{{ url_for('web.billing_page') }}" class="back-button">
+            Back to Billing
+        </a>
+    </div>
+
+    <div id="invoice-alert" class="invoice-alert" role="alert" hidden></div>
+
+    <section class="invoice-section" id="gst-configuration-section">
+        <div class="section-heading">
+            <div>
+                <h2>GST Configuration</h2>
+                <p>Manage your restaurant's tax and business information.</p>
+            </div>
+            <span class="section-tag">TAX SETTINGS</span>
+        </div>
+
+        <form
+            id="gst-config-form"
+            data-user-role="{{ current_user.role }}"
+        >
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="business-name">Business Name</label>
+                    <input
+                        type="text"
+                        id="business-name"
+                        name="business_name"
+                        placeholder="Enter business name"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="gstin">GSTIN</label>
+                    <input
+                        type="text"
+                        id="gstin"
+                        name="gstin"
+                        maxlength="15"
+                        placeholder="Enter 15-character GSTIN"
+                    >
+                </div>
+
+                <div class="form-field full-width">
+                    <label for="business-address">Business Address</label>
+                    <textarea
+                        id="business-address"
+                        name="business_address"
+                        rows="2"
+                        placeholder="Enter registered business address"
+                    ></textarea>
+                </div>
+
+                <div class="form-field">
+                    <label for="restaurant-state">Restaurant State</label>
+                    <input
+                        type="text"
+                        id="restaurant-state"
+                        name="restaurant_state"
+                        placeholder="Example: Uttar Pradesh"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="gst-rate">GST Rate (%)</label>
+                    <input
+                        type="number"
+                        id="gst-rate"
+                        name="gst_rate"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        placeholder="5"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="invoice-prefix">Invoice Prefix</label>
+                    <input
+                        type="text"
+                        id="invoice-prefix"
+                        name="invoice_prefix"
+                        placeholder="INV"
+                    >
+                </div>
+
+                <div class="form-field checkbox-field">
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="gst-registered"
+                            name="is_gst_registered"
+                        >
+                        GST Registered Business
+                    </label>
+                </div>
+
+                <div class="form-field checkbox-field">
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="demo-mode"
+                            name="is_demo"
+                        >
+                        Demo Invoice Mode
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="form-actions" id="gst-config-actions">
+                <button type="submit" class="primary-button" id="save-gst-button">
+                    Save GST Configuration
+                </button>
+            </div>
+        </form>
+
+        <p class="permission-note" id="gst-permission-note" hidden>
+            You can view GST configuration, but only authorized managers can update it.
+        </p>
+    </section>
+
+    <section class="invoice-section">
+        <div class="section-heading">
+            <div>
+                <h2>Generate Invoice</h2>
+                <p>Create a GST invoice for a completed customer order.</p>
+            </div>
+            <span class="section-tag">NEW INVOICE</span>
+        </div>
+
+        <form id="generate-invoice-form">
+            <div class="form-grid invoice-action-grid">
+                <div class="form-field">
+                    <label for="generate-order-id">Order ID</label>
+                    <input
+                        type="number"
+                        id="generate-order-id"
+                        min="1"
+                        required
+                        placeholder="Enter order ID"
+                    >
+                </div>
+
+                <div class="form-field button-field">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="primary-button" id="generate-invoice-button">
+                        Generate Invoice
+                    </button>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section class="invoice-section">
+        <div class="section-heading">
+            <div>
+                <h2>Find Existing Invoice</h2>
+                <p>Retrieve an invoice using its invoice ID or order ID.</p>
+            </div>
+            <span class="section-tag">INVOICE LOOKUP</span>
+        </div>
+
+        <form id="lookup-invoice-form">
+            <div class="form-grid invoice-action-grid">
+                <div class="form-field">
+                    <label for="lookup-type">Search By</label>
+                    <select id="lookup-type">
+                        <option value="order">Order ID</option>
+                        <option value="invoice">Invoice ID</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="lookup-id">ID</label>
+                    <input
+                        type="number"
+                        id="lookup-id"
+                        min="1"
+                        required
+                        placeholder="Enter ID"
+                    >
+                </div>
+
+                <div class="form-field button-field">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="secondary-button">
+                        Find Invoice
+                    </button>
+                </div>
+            </div>
+        </form>
+    </section>
+
+    <section class="invoice-section invoice-result-section" id="invoice-result-section" hidden>
+        <div class="section-heading result-heading">
+            <div>
+                <h2>Invoice Details</h2>
+                <p>Review the generated tax invoice.</p>
+            </div>
+
+            <button type="button" id="print-invoice-button" class="primary-button">
+                Print Invoice
+            </button>
+        </div>
+
+        <div id="invoice-document" class="invoice-document">
+            <div class="invoice-document-header">
+                <div>
+                    <p class="eyebrow">SERVEWISE</p>
+                    <h2 id="display-business-name">Restaurant Name</h2>
+                    <p id="display-business-address"></p>
+                    <p id="display-gstin"></p>
+                </div>
+
+                <div class="invoice-title-block">
+                    <h1>TAX INVOICE</h1>
+                    <p id="display-invoice-number"></p>
+                    <p id="display-invoice-date"></p>
+                </div>
+            </div>
+
+            <div class="invoice-meta">
+                <div>
+                    <span>Order ID</span>
+                    <strong id="display-order-id">—</strong>
+                </div>
+                <div>
+                    <span>Place of Supply</span>
+                    <strong id="display-place-of-supply">—</strong>
+                </div>
+                <div>
+                    <span>Tax Type</span>
+                    <strong id="display-tax-type">—</strong>
+                </div>
+                <div>
+                    <span>Invoice Status</span>
+                    <strong id="display-invoice-status">—</strong>
+                </div>
+            </div>
+
+            <div class="invoice-table-wrapper">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Taxable Value</th>
+                            <th>GST</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoice-items-body">
+                        <tr>
+                            <td colspan="6">No invoice loaded.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="invoice-summary">
+                <div><span>Taxable Value</span><strong id="display-taxable-value">₹0.00</strong></div>
+                <div><span>Discount</span><strong id="display-discount">₹0.00</strong></div>
+                <div><span>CGST</span><strong id="display-cgst">₹0.00</strong></div>
+                <div><span>SGST</span><strong id="display-sgst">₹0.00</strong></div>
+                <div><span>IGST</span><strong id="display-igst">₹0.00</strong></div>
+                <div><span>Total Tax</span><strong id="display-total-tax">₹0.00</strong></div>
+                <div class="grand-total">
+                    <span>Grand Total</span>
+                    <strong id="display-total-amount">₹0.00</strong>
+                </div>
+            </div>
+
+            <p class="invoice-footer-note">
+                Thank you for dining with us. This is a computer-generated invoice.
+            </p>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/invoices.js') }}" defer></script>
+{% endblock %}

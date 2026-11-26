@@ -39,6 +39,15 @@ BILLING_VIEW_ROLES = (
     "system_administrator"
 )
 
+INVOICE_VIEW_ROLES = (
+    "restaurant_owner",
+    "general_manager",
+    "assistant_manager",
+    "cashier",
+    "accountant",
+    "system_administrator"
+)
+
 
 @web_bp.route("/", methods=["GET"])
 def home():
@@ -57,6 +66,7 @@ def login_page():
 def dashboard_page():
     user_role = current_user.role
     dashboard = DASHBOARD_CONFIG.get(user_role)
+
     if dashboard is None:
         abort(404)
 
@@ -98,3 +108,10 @@ def orders_page():
 @role_required(*BILLING_VIEW_ROLES)
 def billing_page():
     return render_template("billing.html")
+
+
+@web_bp.route("/invoices", methods=["GET"])
+@login_required
+@role_required(*INVOICE_VIEW_ROLES)
+def invoices_page():
+    return render_template("invoices.html")
